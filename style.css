@@ -70,12 +70,12 @@ body {
 	color: hsl(0, 85%, 45%);
 }
 
-#password:focus ~ .strength-meter {
+/* #password:focus ~ .strength-meter {
 	display: flex;
-}
+} */
 
 .strength-meter {
-	display: none;
+	display: flex;
 	gap: 4px;
 }
 

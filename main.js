@@ -9,7 +9,6 @@ const inputLname = document.querySelector("#lname");
 const inputEmail = document.querySelector("#email");
 const inputPass = document.querySelector("#password");
 const inputPassConfirm = document.querySelector("#pass-confirm");
-const strgthMeter = document.querySelector(".strength-meter");
 
 // Create account button
 const btnRegister = document.querySelector(".btn__register");
@@ -31,11 +30,23 @@ let capScore = 0;
 let spCharScore = 0;
 let passStrgthScore;
 let passStrgth;
+let strgthMeter;
 
 // Generate hint for input fields
 const generateHint = function (mssg) {
 	return `<p class="input__error">${mssg}</p>`;
 };
+
+const strgthMeterHtml = `
+	<div class="strength-meter very-weak">
+		<div class="level" id="lvl-1"></div>
+		<div class="level" id="lvl-2"></div>
+		<div class="level" id="lvl-3"></div>
+		<div class="level" id="lvl-4"></div>
+		<div class="level" id="lvl-5"></div>
+		<p class="desc"></p>
+	</div>
+`;
 
 /* Event listeners */
 
@@ -59,10 +70,35 @@ inputEmail.addEventListener("blur", function (e) {
 	}
 });
 
-// Validate password entry
+// Password field event listeners
+// On focus
+inputPass.addEventListener("focus", function (e) {
+	const input = e.target;
+
+	if (!input.nextElementSibling) {
+		input.insertAdjacentHTML("afterend", strgthMeterHtml);
+	} else if (input.nextElementSibling.className === "input__error") {
+		input.nextElementSibling.remove();
+		input.insertAdjacentHTML("afterend", strgthMeterHtml);
+	}
+
+	strgthMeter = document.querySelector(".strength-meter");
+});
+
+// On blur
+inputPass.addEventListener("blur", function (e) {
+	const input = e.target;
+
+	if (input.nextElementSibling.classList[0] === "strength-meter") {
+		input.nextElementSibling.remove();
+	}
+});
+
+// On input
 inputPass.addEventListener("input", function (e) {
 	const inputVal = e.target.value;
 
+	// Check password length
 	if (inputVal.length >= 8) {
 		if (lgthScore === 0) {
 			lgthScore += 25;
@@ -71,6 +107,7 @@ inputPass.addEventListener("input", function (e) {
 		lgthScore = 0;
 	}
 
+	// Check for capital letters
 	if (/[A-Z]/.test(inputVal)) {
 		if (capScore === 0) {
 			capScore += 15;
@@ -79,6 +116,7 @@ inputPass.addEventListener("input", function (e) {
 		capScore = 0;
 	}
 
+	// Check for numbers
 	if (/[0-9]/.test(inputVal)) {
 		if (numScore === 0) {
 			numScore += 15;
@@ -87,6 +125,7 @@ inputPass.addEventListener("input", function (e) {
 		numScore = 0;
 	}
 
+	// Check for special characters
 	if (/[!@#\$%\^&*()~`<>?|\\{}\[\]]/.test(inputVal)) {
 		if (spCharScore === 0) {
 			spCharScore += 45;
@@ -110,10 +149,12 @@ inputPass.addEventListener("input", function (e) {
 		strgthMeter.classList.replace(strgthMeter.classList[1], "very-strong");
 });
 
-// Check password match
+// Confirm password event listeners
+// On blur
 inputPassConfirm.addEventListener("blur", function (e) {
 	const input = e.target;
 
+	// Check for password match
 	if (inputPass.value && input.value) {
 		if (input.value !== inputPass.value) {
 			if (!input.nextElementSibling) {
@@ -125,7 +166,8 @@ inputPassConfirm.addEventListener("blur", function (e) {
 	}
 });
 
-// Submit registeration form
+// Button event listener
+// On click
 btnRegister.addEventListener("click", function (e) {
 	e.preventDefault();
 
