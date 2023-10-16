@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="style.css" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div class="form-container">
+			<form class="form form__reg">
+				<div class="input-container">
+					<label for="fname" class="input input__label">
+						Firstname
+						<input
+							type="text"
+							placeholder="Enter your firstname(e.g. John)"
+							id="fname"
+							class="input input__field"
+						/>
+					</label>
+					<label for="lname" class="input input__label">
+						Lastname
+						<input
+							type="text"
+							placeholder="Enter your lastname (e.g. Doe)"
+							id="lname"
+							class="input input__field"
+						/>
+					</label>
+					<label for="email" class="input input__label">
+						Email
+						<input
+							type="email"
+							placeholder="Enter your email address (e.g. john@mail.com)"
+							id="email"
+							class="input input__field"
+						/>
+					</label>
+					<label for="password" class="input input__label">
+						Password
+						<input
+							type="password"
+							placeholder="Enter a password you can remember"
+							id="password"
+							class="input input__field"
+						/>
+						<div class="strength-meter very-weak">
+							<div class="level" id="lvl-1"></div>
+							<div class="level" id="lvl-2"></div>
+							<div class="level" id="lvl-3"></div>
+							<div class="level" id="lvl-4"></div>
+							<div class="level" id="lvl-5"></div>
+							<p class="desc"></p>
+						</div>
+					</label>
+					<label for="pass-confirm" class="input input__label">
+						Confirm Password
+						<input
+							type="password"
+							placeholder="Confirm your Password"
+							id="pass-confirm"
+							class="input input__field"
+						/>
+					</label>
+				</div>
+				<button class="btn btn__register">Create Account</button>
+			</form>
+		</div>
+		<script src="main.js"></script>
+	</body>
+</html>
