@@ -39,6 +39,26 @@ const generateHint = function (mssg) {
 
 /* Event listeners */
 
+// Validate email entry
+inputEmail.addEventListener("blur", function (e) {
+	const input = e.target;
+
+	if (input.value) {
+		const emailRegex =
+			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+		if (!emailRegex.test(input.value)) {
+			if (!input.nextElementSibling) {
+				input.insertAdjacentHTML("afterend", generateHint(errMssgs[1]));
+			} else {
+				input.nextElementSibling.textContent = errMssgs[1];
+			}
+		} else {
+			if (input.nextElementSibling) input.nextElementSibling.remove();
+		}
+	}
+});
+
 // Validate password entry
 inputPass.addEventListener("input", function (e) {
 	const inputVal = e.target.value;
@@ -115,20 +135,11 @@ btnRegister.addEventListener("click", function (e) {
 			if (input.nextElementSibling) {
 				input.nextElementSibling.remove();
 			}
-
-			// Check if email is valid
-			if (input.id === "email") {
-				const emailRegex =
-					/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-				if (!emailRegex.test(input.value)) {
-					if (!input.nextElementSibling) {
-						input.insertAdjacentHTML("afterend", generateHint(errMssgs[1]));
-					}
-				}
-			}
 		} else {
-			if (!input.nextElementSibling || input.nextElementSibling.tagName !== "p") {
+			if (
+				!input.nextElementSibling ||
+				input.nextElementSibling.className !== "input__error"
+			) {
 				input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
 			}
 		}
