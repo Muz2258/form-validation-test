@@ -37,22 +37,13 @@ const generateHint = function (mssg) {
 	return `<p class="input__error">${mssg}</p>`;
 };
 
-const showPassStrgth = function (str) {
-	const strgthClasses = strgthMeter.classList;
-
-	strgthClasses.replace(strgthClasses[1], str);
-};
-
 /* Event listeners */
 
 // Validate password entry
 inputPass.addEventListener("input", function (e) {
-	const input = e.target.value;
-	const specialCharRegex = /[!@#\$%\^&*()~`<>?|\\{}\[\]]/;
-	const numRegex = /[0-9]/;
-	const capRegex = /[A-Z]/;
+	const inputVal = e.target.value;
 
-	if (input.length >= 8) {
+	if (inputVal.length >= 8) {
 		if (lgthScore === 0) {
 			lgthScore += 25;
 		}
@@ -60,7 +51,7 @@ inputPass.addEventListener("input", function (e) {
 		lgthScore = 0;
 	}
 
-	if (capRegex.test(input)) {
+	if (/[A-Z]/.test(inputVal)) {
 		if (capScore === 0) {
 			capScore += 15;
 		}
@@ -68,7 +59,7 @@ inputPass.addEventListener("input", function (e) {
 		capScore = 0;
 	}
 
-	if (numRegex.test(input)) {
+	if (/[0-9]/.test(inputVal)) {
 		if (numScore === 0) {
 			numScore += 15;
 		}
@@ -76,7 +67,7 @@ inputPass.addEventListener("input", function (e) {
 		numScore = 0;
 	}
 
-	if (specialCharRegex.test(input)) {
+	if (/[!@#\$%\^&*()~`<>?|\\{}\[\]]/.test(inputVal)) {
 		if (spCharScore === 0) {
 			spCharScore += 45;
 		}
@@ -84,29 +75,33 @@ inputPass.addEventListener("input", function (e) {
 		spCharScore = 0;
 	}
 
+	// Calculate total password strength score
 	passStrgthScore = lgthScore + numScore + capScore + spCharScore;
 
 	// Update strength classes
-	if (passStrgthScore < 15) showPassStrgth("very-weak");
-	else if (passStrgthScore >= 15 && passStrgthScore < 30) showPassStrgth("weak");
-	else if (passStrgthScore >= 30 && passStrgthScore < 55) showPassStrgth("average");
-	else if (passStrgthScore >= 55 && passStrgthScore < 100) showPassStrgth("strong");
-	else if (passStrgthScore === 100) showPassStrgth("very-strong");
+	if (passStrgthScore < 15) strgthMeter.classList.replace(strgthMeter.classList[1], "very-weak");
+	else if (passStrgthScore >= 15 && passStrgthScore < 30)
+		strgthMeter.classList.replace(strgthMeter.classList[1], "weak");
+	else if (passStrgthScore >= 30 && passStrgthScore < 55)
+		strgthMeter.classList.replace(strgthMeter.classList[1], "average");
+	else if (passStrgthScore >= 55 && passStrgthScore < 100)
+		strgthMeter.classList.replace(strgthMeter.classList[1], "strong");
+	else if (passStrgthScore === 100)
+		strgthMeter.classList.replace(strgthMeter.classList[1], "very-strong");
 });
 
-// Blur listener to check for password match
+// Check password match
 inputPassConfirm.addEventListener("blur", function (e) {
 	const input = e.target;
 
-	// Check for password match
-	if (inputPass.value) {
+	if (inputPass.value && input.value) {
 		if (input.value !== inputPass.value) {
 			if (!input.nextElementSibling) {
 				input.insertAdjacentHTML("afterend", generateHint(errMssgs[2]));
 			} else {
 				input.nextElementSibling.textContent = errMssgs[2];
 			}
-		}
+		} else if (input.nextElementSibling) input.nextElementSibling.remove();
 	}
 });
 
@@ -133,27 +128,9 @@ btnRegister.addEventListener("click", function (e) {
 				}
 			}
 		} else {
-			if (!input.nextElementSibling) {
+			if (!input.nextElementSibling || input.nextElementSibling.tagName !== "p") {
 				input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
 			}
 		}
 	});
 });
-
-/* fetch("/api/data.json")
-	.then((res) => res.json())
-	.then((data) => console.log(data)); */
-
-/* fetch(`${base}/accounts`, {
-	method: "POST",
-	headers: {
-		"Content-Type": "application/json",
-	},
-	body: JSON.stringify({
-		username: "jasmin55",
-		password: "@nutcracker66$$",
-		firstname: "jasmin",
-		lastname: "Anderson",
-		dob: "12-08-1992",
-	}),
-}).then((res) => console.log(res.status)); */

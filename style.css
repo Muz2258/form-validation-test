@@ -92,17 +92,20 @@ body {
 
 .very-weak #lvl-1 {
 	background-color: hsl(0, 85%, 45%);
+	border: none;
 }
 
 .weak #lvl-1,
 .weak #lvl-2 {
 	background-color: hsl(30, 85%, 45%);
+	border: none;
 }
 
 .average #lvl-1,
 .average #lvl-2,
 .average #lvl-3 {
 	background-color: hsl(50, 85%, 45%);
+	border: none;
 }
 
 .strong #lvl-1,
@@ -110,6 +113,7 @@ body {
 .strong #lvl-3,
 .strong #lvl-4 {
 	background-color: hsl(75, 85%, 45%);
+	border: none;
 }
 
 .very-strong #lvl-1,
@@ -118,6 +122,7 @@ body {
 .very-strong #lvl-4,
 .very-strong #lvl-5 {
 	background-color: hsl(135, 85%, 35%);
+	border: none;
 }
 
 .btn {
