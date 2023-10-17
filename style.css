@@ -133,6 +133,11 @@ body {
 	cursor: pointer;
 }
 
+.btn:disabled {
+	background-color: hsl(0, 0%, 75%);
+	color: hsl(0, 0%, 60%);
+}
+
 .btn__register {
 	background-color: hsl(210, 100%, 25%);
 	color: white;
