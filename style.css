@@ -40,7 +40,9 @@ body {
 } */
 
 .input__label {
+	position: relative;
 	font-size: 11px;
+	line-height: 1;
 	color: hsl(0, 0%, 50%);
 }
 
@@ -70,9 +72,24 @@ body {
 	color: hsl(0, 85%, 45%);
 }
 
-/* #password:focus ~ .strength-meter {
-	display: flex;
-} */
+.input__btnToggle {
+	display: none;
+	position: absolute;
+	top: 23.5px;
+	/* transform: translateY(-60%); */
+
+	right: 8px;
+	font-size: 11px;
+	line-height: 1;
+	font-weight: 600;
+	color: hsl(210, 100%, 25%);
+	padding: 4px 8px;
+	cursor: pointer;
+}
+
+.input__label:hover .input__btnToggle {
+	display: block;
+}
 
 .strength-meter {
 	display: flex;

@@ -8,9 +8,12 @@ const inputFname = document.querySelector("#fname");
 const inputLname = document.querySelector("#lname");
 const inputEmail = document.querySelector("#email");
 const inputPass = document.querySelector("#password");
+const showPass = document.querySelector("#show-pass");
 const inputPassConfirm = document.querySelector("#pass-confirm");
+const showPassConfirm = document.querySelector("#show-confirm");
 const btnRegister = document.querySelector(".btn__register");
 
+// Form data object
 const data = {
 	formData: {
 		firstname: "",
@@ -53,14 +56,10 @@ const data = {
 
 // Array of possible error messages
 const errMssgs = [
-	"Hey! you missed this field",
+	"Ummm! this field is required you know...",
 	"Hey! the email you entered is not correct",
 	"You seem not to have inputted a matching password",
 ];
-
-let err;
-let strgthMeter;
-// const validStatus = [false, false, false, false, false];
 
 // Generate hint for input fields
 const generateHint = function (mssg) {
@@ -74,8 +73,9 @@ inputFname.addEventListener("blur", function (e) {
 		input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
 		data.fnameStatus = false;
 	} else {
-		if (input.nextElementSibling) input.nextElementSibling.remove();
+		data.formData.firstname = input.value;
 		data.fnameStatus = true;
+		if (input.nextElementSibling) input.nextElementSibling.remove();
 	}
 });
 
@@ -86,8 +86,9 @@ inputLname.addEventListener("blur", function (e) {
 		input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
 		data.lnameStatus = false;
 	} else {
-		if (input.nextElementSibling) input.nextElementSibling.remove();
+		data.formData.lastname = input.value;
 		data.lnameStatus = true;
+		if (input.nextElementSibling) input.nextElementSibling.remove();
 	}
 });
 
@@ -107,19 +108,24 @@ inputEmail.addEventListener("blur", function (e) {
 				input.nextElementSibling.textContent = errMssgs[1];
 			}
 		} else {
+			data.formData.email = input.value;
 			data.emailStatus = true;
 			if (input.nextElementSibling) input.nextElementSibling.remove();
 		}
+	} else {
+		data.emailStatus = false;
+		if (!input.nextElementSibling)
+			input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
 	}
 });
 
 /* 
 	PASSWORD INPUT INTERACTIONS 
 
-	- Focus, blur and input event handlers for both password
-	and confirm password inputs
+	- Focus, blur and input event handlers for both password and confirm password inputs
 	- Calculate and show password strength
 	- Show warning hints if fields are empty
+	- Show and hide password
 */
 
 // HTML template for password strength meter
@@ -132,6 +138,8 @@ const strgthMeterHtml = `
 		<div class="level" id="lvl-5"></div>
 	</div>
 `;
+
+let strgthMeter;
 
 // Function to calculate password strength
 const calcPassStrength = function (val) {
@@ -170,15 +178,40 @@ const calcPassStrength = function (val) {
 		strgthMeter.classList.replace(strgthMeter.classList[1], "very-strong");
 };
 
+// Show or Hide password function
+const showHidePassword = function (el, target) {
+	if (el.textContent === "Show") {
+		el.textContent = "Hide";
+		target.setAttribute("type", "text");
+	} else {
+		el.textContent = "Show";
+		target.setAttribute("type", "password");
+	}
+};
+
+// Show/Hide password button for password: Click event
+showPass.addEventListener("click", function (e) {
+	const btn = e.target;
+
+	showHidePassword(btn, inputPass);
+});
+
+// Show/Hide password button for confirm password: Click event
+showPassConfirm.addEventListener("click", function (e) {
+	const btn = e.target;
+
+	showHidePassword(btn, inputPassConfirm);
+});
+
 // Password input: Focus event
 inputPass.addEventListener("focus", function (e) {
 	const input = e.target;
 
-	if (!input.nextElementSibling) {
-		input.insertAdjacentHTML("afterend", strgthMeterHtml);
-	} else if (input.nextElementSibling.className === "input__error") {
-		input.nextElementSibling.remove();
-		input.insertAdjacentHTML("afterend", strgthMeterHtml);
+	if (!showPass.nextElementSibling) {
+		showPass.insertAdjacentHTML("afterend", strgthMeterHtml);
+	} else if (showPass.nextElementSibling.className === "input__error") {
+		showPass.nextElementSibling.remove();
+		showPass.insertAdjacentHTML("afterend", strgthMeterHtml);
 	}
 
 	strgthMeter = document.querySelector(".strength-meter");
@@ -195,17 +228,11 @@ inputPass.addEventListener("input", function (e) {
 
 // Password input: Blur event
 inputPass.addEventListener("blur", function (e) {
-	const input = e.target;
+	// const input = e.target;
 
-	if (input.nextElementSibling.classList[0] === "strength-meter") {
-		input.nextElementSibling.remove();
+	if (showPass.nextElementSibling.classList[0] === "strength-meter") {
+		showPass.nextElementSibling.remove();
 	}
-
-	/* if (input.value) {
-		data.passStatus = true;
-	} else {
-		data.passStatus = false;
-	} */
 });
 
 // Confirm password input: Blur event
@@ -217,15 +244,16 @@ inputPassConfirm.addEventListener("blur", function (e) {
 		if (input.value !== inputPass.value) {
 			data.passStatus = false;
 
-			if (!input.nextElementSibling) {
-				input.insertAdjacentHTML("afterend", generateHint(errMssgs[2]));
+			if (!showPassConfirm.nextElementSibling) {
+				showPassConfirm.insertAdjacentHTML("afterend", generateHint(errMssgs[2]));
 			} else {
-				input.nextElementSibling.textContent = errMssgs[2];
+				showPassConfirm.nextElementSibling.textContent = errMssgs[2];
 			}
 		} else {
+			data.formData.password = input.value;
 			data.passStatus = true;
 
-			if (input.nextElementSibling) input.nextElementSibling.remove();
+			if (showPassConfirm.nextElementSibling) showPassConfirm.nextElementSibling.remove();
 		}
 	} else data.passStatus = false;
 });
@@ -233,9 +261,9 @@ inputPassConfirm.addEventListener("blur", function (e) {
 /* 
 	SUBMITTING FORM DATA
 
-	- Click interaction on button
-	- Verify input field data is valid
 	- Make post request to submit data to api
+	- Handle request errors
+	- Handle request success
 */
 // Submit button: Click event
 btnRegister.addEventListener("click", function (e) {
