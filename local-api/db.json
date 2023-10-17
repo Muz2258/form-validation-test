@@ -1,3 +1,11 @@
 {
-	"accounts": []
+  "accounts": [
+    {
+      "firstname": "Emamuzo",
+      "lastname": "Okerri",
+      "email": "emamuzo.okerri@gmail.com",
+      "password": "Password",
+      "id": 1
+    }
+  ]
 }

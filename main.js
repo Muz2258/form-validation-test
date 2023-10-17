@@ -268,4 +268,15 @@ inputPassConfirm.addEventListener("blur", function (e) {
 // Submit button: Click event
 btnRegister.addEventListener("click", function (e) {
 	e.preventDefault();
+
+	fetch(`${base}/accounts`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(data.formData),
+	}).then((res) => {
+		if (res.status === 200)
+			inputFname.value = inputLname.value = inputPass = inputPassConfirm = inputEmail = "";
+	});
 });
