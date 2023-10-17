@@ -24,12 +24,6 @@ const errMssgs = [
 ];
 
 let err;
-let lgthScore = 0;
-let numScore = 0;
-let capScore = 0;
-let spCharScore = 0;
-let passStrgthScore;
-let passStrgth;
 let strgthMeter;
 const validStatus = [false, false, false, false, false];
 
@@ -37,19 +31,6 @@ const validStatus = [false, false, false, false, false];
 const generateHint = function (mssg) {
 	return `<p class="input__error">${mssg}</p>`;
 };
-
-const strgthMeterHtml = `
-	<div class="strength-meter very-weak">
-		<div class="level" id="lvl-1"></div>
-		<div class="level" id="lvl-2"></div>
-		<div class="level" id="lvl-3"></div>
-		<div class="level" id="lvl-4"></div>
-		<div class="level" id="lvl-5"></div>
-		<p class="desc"></p>
-	</div>
-`;
-
-/* Event listeners */
 
 // Validate email entry
 inputEmail.addEventListener("blur", function (e) {
@@ -76,75 +57,47 @@ inputEmail.addEventListener("blur", function (e) {
 	}
 });
 
-// Password field event listeners
-// On focus
-inputPass.addEventListener("focus", function (e) {
-	const input = e.target;
+/* 
+	PASSWORD INPUT INTERACTIONS 
 
-	if (!input.nextElementSibling) {
-		input.insertAdjacentHTML("afterend", strgthMeterHtml);
-	} else if (input.nextElementSibling.className === "input__error") {
-		input.nextElementSibling.remove();
-		input.insertAdjacentHTML("afterend", strgthMeterHtml);
-	}
+	- Focus, blur and input event handlers for both password
+	and confirm password inputs
+	- Calculate and show password strength
+	- Show warning hints if fields are empty
+*/
 
-	strgthMeter = document.querySelector(".strength-meter");
-});
+// HTML template for password strength meter
+const strgthMeterHtml = `
+	<div class="strength-meter very-weak">
+		<div class="level" id="lvl-1"></div>
+		<div class="level" id="lvl-2"></div>
+		<div class="level" id="lvl-3"></div>
+		<div class="level" id="lvl-4"></div>
+		<div class="level" id="lvl-5"></div>
+	</div>
+`;
 
-// On blur
-inputPass.addEventListener("blur", function (e) {
-	const input = e.target;
-
-	if (input.nextElementSibling.classList[0] === "strength-meter") {
-		input.nextElementSibling.remove();
-	}
-
-	if (input.value) {
-		validStatus[3] = true;
-	} else {
-		validStatus[3] = false;
-	}
-});
-
-// On input
-inputPass.addEventListener("input", function (e) {
-	const inputVal = e.target.value;
+// Function to calculate password strength
+const calcPassStrength = function (val) {
+	let lgthScore = 0;
+	let numScore = 0;
+	let capScore = 0;
+	let spCharScore = 0;
+	let passStrgthScore;
 
 	// Check password length
-	if (inputVal.length >= 8) {
-		if (lgthScore === 0) {
-			lgthScore += 25;
-		}
-	} else {
-		lgthScore = 0;
-	}
+	val.length >= 8 && lgthScore === 0 ? (lgthScore += 25) : (lgthScore = 0);
 
 	// Check for capital letters
-	if (/[A-Z]/.test(inputVal)) {
-		if (capScore === 0) {
-			capScore += 15;
-		}
-	} else {
-		capScore = 0;
-	}
+	/[A-Z]/.test(val) && capScore === 0 ? (capScore += 15) : (capScore = 0);
 
 	// Check for numbers
-	if (/[0-9]/.test(inputVal)) {
-		if (numScore === 0) {
-			numScore += 15;
-		}
-	} else {
-		numScore = 0;
-	}
+	/[0-9]/.test(val) && numScore === 0 ? (numScore += 15) : (numScore = 0);
 
 	// Check for special characters
-	if (/[!@#\$%\^&*()~`<>?|\\{}\[\]]/.test(inputVal)) {
-		if (spCharScore === 0) {
-			spCharScore += 45;
-		}
-	} else {
-		spCharScore = 0;
-	}
+	/[!@#\$%\^&*()~`<>?|\\{}\[\]]/.test(val) && spCharScore === 0
+		? (spCharScore += 45)
+		: (spCharScore = 0);
 
 	// Calculate total password strength score
 	passStrgthScore = lgthScore + numScore + capScore + spCharScore;
@@ -159,10 +112,47 @@ inputPass.addEventListener("input", function (e) {
 		strgthMeter.classList.replace(strgthMeter.classList[1], "strong");
 	else if (passStrgthScore === 100)
 		strgthMeter.classList.replace(strgthMeter.classList[1], "very-strong");
+};
+
+// Password input: Focus event
+inputPass.addEventListener("focus", function (e) {
+	const input = e.target;
+
+	if (!input.nextElementSibling) {
+		input.insertAdjacentHTML("afterend", strgthMeterHtml);
+	} else if (input.nextElementSibling.className === "input__error") {
+		input.nextElementSibling.remove();
+		input.insertAdjacentHTML("afterend", strgthMeterHtml);
+	}
+
+	strgthMeter = document.querySelector(".strength-meter");
+
+	if (input.value) {
+		calcPassStrength(input.value);
+	}
 });
 
-// Confirm password event listeners
-// On blur
+// Password input: Input event
+inputPass.addEventListener("input", function (e) {
+	calcPassStrength(e.target.value);
+});
+
+// Password input: Blur event
+inputPass.addEventListener("blur", function (e) {
+	const input = e.target;
+
+	if (input.nextElementSibling.classList[0] === "strength-meter") {
+		input.nextElementSibling.remove();
+	}
+
+	if (input.value) {
+		validStatus[3] = true;
+	} else {
+		validStatus[3] = false;
+	}
+});
+
+// Confirm password input: Blur event
 inputPassConfirm.addEventListener("blur", function (e) {
 	const input = e.target;
 
@@ -184,30 +174,14 @@ inputPassConfirm.addEventListener("blur", function (e) {
 	} else validStatus[4] = false;
 });
 
-// Button event listener
-// On click
+/* 
+	SUBMITTING FORM DATA
+
+	- Click interaction on button
+	- Verify input field data is valid
+	- Make post request to submit data to api
+*/
+// Submit button: Click event
 btnRegister.addEventListener("click", function (e) {
 	e.preventDefault();
-
-	// Validate form fields
-	inputsRegister.forEach((input, i) => {
-		if (input.id !== "email" || input.id !== "password" || input.id !== "pass-confirm") {
-			if (input.value) {
-				// validStatus[i] = true;
-				if (input.nextElementSibling) {
-					input.nextElementSibling.remove();
-				}
-			} else {
-				if (
-					!input.nextElementSibling ||
-					input.nextElementSibling.className !== "input__error"
-				) {
-					input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
-					validStatus[i] = false;
-				}
-			}
-		}
-		console.log(input.id);
-	});
-	console.log(validStatus);
 });
