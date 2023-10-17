@@ -1,0 +1,23 @@
+{
+	"name": "form-validation",
+	"version": "1.0.0",
+	"description": "",
+	"main": "main.js",
+	"scripts": {
+		"local-api": "json-server --watch local-api/db.json"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Muz2258/form-validation-test.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Muz2258/form-validation-test/issues"
+	},
+	"homepage": "https://github.com/Muz2258/form-validation-test#readme",
+	"devDependencies": {
+		"json-server": "^0.17.4"
+	}
+}

@@ -31,6 +31,7 @@ let spCharScore = 0;
 let passStrgthScore;
 let passStrgth;
 let strgthMeter;
+const validStatus = [false, false, false, false, false];
 
 // Generate hint for input fields
 const generateHint = function (mssg) {
@@ -61,11 +62,16 @@ inputEmail.addEventListener("blur", function (e) {
 		if (!emailRegex.test(input.value)) {
 			if (!input.nextElementSibling) {
 				input.insertAdjacentHTML("afterend", generateHint(errMssgs[1]));
+				validStatus[2] = false;
 			} else {
 				input.nextElementSibling.textContent = errMssgs[1];
+				validStatus[2] = false;
 			}
 		} else {
-			if (input.nextElementSibling) input.nextElementSibling.remove();
+			if (input.nextElementSibling) {
+				input.nextElementSibling.remove();
+				validStatus[2] = true;
+			}
 		}
 	}
 });
@@ -91,6 +97,12 @@ inputPass.addEventListener("blur", function (e) {
 
 	if (input.nextElementSibling.classList[0] === "strength-meter") {
 		input.nextElementSibling.remove();
+	}
+
+	if (input.value) {
+		validStatus[3] = true;
+	} else {
+		validStatus[3] = false;
 	}
 });
 
@@ -157,13 +169,19 @@ inputPassConfirm.addEventListener("blur", function (e) {
 	// Check for password match
 	if (inputPass.value && input.value) {
 		if (input.value !== inputPass.value) {
+			validStatus[4] = false;
+
 			if (!input.nextElementSibling) {
 				input.insertAdjacentHTML("afterend", generateHint(errMssgs[2]));
 			} else {
 				input.nextElementSibling.textContent = errMssgs[2];
 			}
-		} else if (input.nextElementSibling) input.nextElementSibling.remove();
-	}
+		} else {
+			validStatus[4] = true;
+
+			if (input.nextElementSibling) input.nextElementSibling.remove();
+		}
+	} else validStatus[4] = false;
 });
 
 // Button event listener
@@ -172,18 +190,24 @@ btnRegister.addEventListener("click", function (e) {
 	e.preventDefault();
 
 	// Validate form fields
-	inputsRegister.forEach((input) => {
-		if (input.value) {
-			if (input.nextElementSibling) {
-				input.nextElementSibling.remove();
-			}
-		} else {
-			if (
-				!input.nextElementSibling ||
-				input.nextElementSibling.className !== "input__error"
-			) {
-				input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
+	inputsRegister.forEach((input, i) => {
+		if (input.id !== "email" || input.id !== "password" || input.id !== "pass-confirm") {
+			if (input.value) {
+				// validStatus[i] = true;
+				if (input.nextElementSibling) {
+					input.nextElementSibling.remove();
+				}
+			} else {
+				if (
+					!input.nextElementSibling ||
+					input.nextElementSibling.className !== "input__error"
+				) {
+					input.insertAdjacentHTML("afterend", generateHint(errMssgs[0]));
+					validStatus[i] = false;
+				}
 			}
 		}
+		console.log(input.id);
 	});
+	console.log(validStatus);
 });
